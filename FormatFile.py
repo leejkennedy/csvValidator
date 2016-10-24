@@ -19,8 +19,8 @@ class FormatFile:
     # dictionary items are related to the BCP Format file used to import CSV data to TSQL
     # for an example check out: .\files\formatfiles\example_formatfile.xml
 
-    def __init__(self, filepath):
-        self.path = filepath
+    def __init__(self, file_path):
+        self.path = file_path
         self.isValid = True
         self.message = None
         self.dic_field = {}
@@ -36,8 +36,8 @@ class FormatFile:
             self.test_column_attributes()
 
     def test_file_validity(self):
-        taglist = ('BCPFORMAT', 'RECORD', 'ROW', 'FIELD', 'COLUMN')
-        for tag in taglist:
+        tag_list = ('BCPFORMAT', 'RECORD', 'ROW', 'FIELD', 'COLUMN')
+        for tag in tag_list:
             if self.verify_tag_exists(tag):
                 self.isValid = True
                 continue
@@ -55,10 +55,10 @@ class FormatFile:
         return exists
 
     def test_field_attributes(self):
-        mandatory_attributelist = ("ID", "xsi:type", "TERMINATOR")
-        optional_attributelist = ("MAX_LENGTH", "COLLATION")
+        mandatory_attribute_list = ("ID", "xsi:type", "TERMINATOR")
+        optional_attribute_list = ("MAX_LENGTH", "COLLATION")
         tag = "FIELD"
-        self.test_mandatory_attributes(tag, mandatory_attributelist)
+        self.test_mandatory_attributes(tag, mandatory_attribute_list)
         i = 0
         for tag in self.fields:
             i += 1
@@ -80,7 +80,7 @@ class FormatFile:
                     else:
                         continue
                 else:
-                    if not att in optional_attributelist and not att in mandatory_attributelist:
+                    if not att in optional_attribute_list and not att in mandatory_attribute_list:
                         self.isValid = False
                         self.message = "The {position} '{tag_name}' tag has an unrecognised attribute '{attribute}'.".format(
                             position=get_ordinal_position(i), tag_name=tag.name, attribute=att)
@@ -89,13 +89,13 @@ class FormatFile:
                         continue
 
     def test_column_attributes(self):
-        mandatory_attributelist = ("SOURCE", "NAME", "xsi:type")
-        optional_attributelist = ("PRECISION", "SCALE", "NULLABLE")
+        mandatory_attribute_list = ("SOURCE", "NAME", "xsi:type")
+        optional_attribute_list = ("PRECISION", "SCALE", "NULLABLE")
         allowed_data_types = (
             "SQLTINYINT", "SQLSMALLINT", "SQLINT", "SQLBIGINT", "SQLDATE", "SQLDATETIME", "SQLDECIMAL", "SQLMONEY",
             "SQLBIT", "SQLVARYCHAR", "SQLNVARCHAR")
         tag = "COLUMN"
-        self.test_mandatory_attributes(tag, mandatory_attributelist)
+        self.test_mandatory_attributes(tag, mandatory_attribute_list)
         i = 0
         for tag in self.columns:
             i += 1
@@ -124,7 +124,7 @@ class FormatFile:
                         break
 
                 else:
-                    if not att in optional_attributelist and not att in mandatory_attributelist:
+                    if not att in optional_attribute_list and not att in mandatory_attribute_list:
                         self.isValid = False
                         self.message = "The {position} '{tag_name}' tag has an unrecognised attribute '{error}'.".format(
                             position=get_ordinal_position(i), error=att, tag_name=tag.name)
@@ -156,7 +156,7 @@ class FormatFile:
                 break
         return exists, i
 
-    def getfields(self):
+    def get_fields(self):
         if self.isValid:
             for field in self.fields:
                 dic_record = {}
@@ -166,8 +166,7 @@ class FormatFile:
                 self.dic_field[field_id] = dic_record
 
             for column in self.columns:
-                source = column.get("SOURCE")
-                column_id = int(source)
+                column_id = int(column.get("SOURCE"))
                 dic_row = self.dic_field.get(column_id)
                 if dic_row is None:
                     # this is bad as it means that there is an id in the column tags that doesnt exist in the FIELD tags
@@ -191,54 +190,54 @@ class FormatFile:
                         nullable = ""
                         value["NULLABLE"] = False
 
-                    datatype = value.get("xsi:type")
-                    value['regex'] = self.get_regex(datatype, max_length, nullable, precision, scale)
+                    data_type = value.get("xsi:type")
+                    value['regex'] = self.get_regex(data_type, max_length, nullable, precision, scale)
             return self.dic_field
         else:
             return
 
     @staticmethod
-    def get_regex(datatype, field_max_length, field_nullable, decimal_precision=18, decimal_scale=0):
-        if datatype == "SQLTINYINT":
+    def get_regex(data_type, field_max_length, field_nullable, decimal_precision=18, decimal_scale=0):
+        if data_type == "SQLTINYINT":
             if field_max_length is None:
                 field_max_length = 3
             regex = r"^[\d]{{1,{regex_max_length}}}${regex_nullable}".format(regex_max_length=field_max_length,
                                                                              regex_nullable=field_nullable)
-        elif datatype == "SQLSMALLINT":
+        elif data_type == "SQLSMALLINT":
             if field_max_length is None:
                 field_max_length = 5
             regex = r"^[\d]{{1,{regex_max_length}}}${regex_nullable}".format(regex_max_length=field_max_length,
                                                                              regex_nullable=field_nullable)
-        elif datatype == "SQLINT":
+        elif data_type == "SQLINT":
             if field_max_length is None:
                 field_max_length = 9
             regex = r"^[\d]{{1,{regex_max_length}}}${regex_nullable}".format(regex_max_length=field_max_length,
                                                                              regex_nullable=field_nullable)
-        elif datatype == "SQLBIGINT":
+        elif data_type == "SQLBIGINT":
             if field_max_length is None:
                 field_max_length = 19
             regex = r"^[\d]{{1,{regex_max_length}}}${regex_nullable}".format(regex_max_length=field_max_length,
                                                                              regex_nullable=field_nullable)
-        elif datatype == "SQLDATE":
+        elif data_type == "SQLDATE":
             regex = r"^[\d]{{4}}-[\d]{{2}}-[\d]{{2}}${regex_nullable}".format(regex_nullable=field_nullable)
-        elif datatype == "SQLDATETIME":
+        elif data_type == "SQLDATETIME":
             regex = r"^[\d]{{4}}-[\d]{{2}}-[\d]{{2}} [\d]{{2}}:[\d]{{2}}:[\d]{{2}}${regex_nullable}".format(
                 regex_nullable=field_nullable)
-        elif datatype == "SQLMONEY":
+        elif data_type == "SQLMONEY":
             regex = r"^(?P<pounds>[\d]{{1,19}})(?P<pence>\.[\d]{{1,4}})?${regex_nullable}".format(
                 regex_nullable=field_nullable)
-        elif datatype == "SQLDECIMAL":
+        elif data_type == "SQLDECIMAL":
             regex = r"^(?:[\d]{{1,{regex_precision}}})(?:\.[\d]{{1,{regex_scale}}})?$|^${regex_nullable}".format(
                 regex_precision=decimal_precision,
                 regex_scale=decimal_scale,
                 regex_nullable=field_nullable)
-        elif datatype == "SQLVARYCHAR" or datatype == "SQLNVARCHAR":
+        elif data_type == "SQLVARYCHAR" or data_type == "SQLNVARCHAR":
             if field_max_length is None:
                 field_max_length = str(1)
             regex = r"^.{{1,{regex_max_length}}}${regex_nullable}".format(
                 regex_max_length=field_max_length, regex_nullable=field_nullable)
-        elif datatype == "SQLBIT":
+        elif data_type == "SQLBIT":
             regex = "^(TRUE|FALSE|0|1)${regex_nullable}".format(regex_nullable=field_nullable)
         else:
-            regex = "Unrecognised xsi:type '{error_data_type}'.".format(error_data_type=datatype)
+            regex = "Unrecognised xsi:type '{error_data_type}'.".format(error_data_type=data_type)
         return regex

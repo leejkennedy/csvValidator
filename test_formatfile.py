@@ -1,5 +1,6 @@
-import FormatFile
 import sys
+
+import FormatFile
 
 
 def test_valid_format_file(filepath):
@@ -9,7 +10,7 @@ def test_valid_format_file(filepath):
 
 def test_get_format_file_dictionary(filepath):
     ff = FormatFile.FormatFile(filepath)
-    fields = ff.getfields()
+    fields = ff.get_fields()
     # print(fields)
 
 if __name__ == '__main__':
