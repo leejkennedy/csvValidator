@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<BCPFORMAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://schemas.microsoft.com/sqlserver/2004/bulkload/format">
+    <RECORD>
+        <FIELD ID="x" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <!--<FIELD ID="1" xsi:type="CharTerm" TERMINATOR="\t" />-->
+        <!--<FIELD ID="2" xsi:type="CharTermx" TERMINATOR="\t" />-->
+        <FIELD ID="2" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <!--<FIELD ID="3" xsi:type="CharTerm" XTERMINATOR="\t" />-->
+        <FIELD ID="3" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <!--<FIELD ID="4" xsi:type="CharTerm" TERMINATOR="\t" BLAH="True"/>-->
+        <FIELD ID="4" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <FIELD ID="5" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <FIELD ID="6" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <FIELD ID="7" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <FIELD ID="8" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <FIELD ID="9" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <FIELD ID="10" xsi:type="CharTerm" TERMINATOR="\t" MAX_LENGTH="17"/>
+        <FIELD ID="11" xsi:type="CharTerm" TERMINATOR="\r\n" MAX_LENGTH="25"/>
+    </RECORD>
+    <ROW>
+        <COLUMN SOURCE="1" NAME="val_tinyint" xsi:type="SQLTINYINT"/>
+        <COLUMN SOURCE="2" NAME="val_smallint" xsi:type="SQLSMALLINT"/>
+        <COLUMN SOURCE="3" NAME="val_int" xsi:type="SQLINT"/>
+        <COLUMN SOURCE="4" NAME="val_bigint" xsi:type="SQLBIGINT"/>
+        <COLUMN SOURCE="5" NAME="val_date" xsi:type="SQLDATE"/>
+        <COLUMN SOURCE="6" NAME="val_datetime" xsi:type="SQLDATETIME"/>
+        <COLUMN SOURCE="7" NAME="val_money" xsi:type="SQLMONEY"/>
+        <COLUMN SOURCE="8" NAME="val_decimal" xsi:type="SQLDECIMAL" NULLABLE="YES" PRECISION="14" SCALE="7"/>
+        <COLUMN SOURCE="9" NAME="val_bit" xsi:type="SQLBIT" NULLABLE="YES"/>
+        <COLUMN SOURCE="10" NAME="val_varchar" xsi:type="SQLVARYCHAR"/>
+        <COLUMN SOURCE="11" NAME="val_varchar_nullable" xsi:type="SQLVARYCHAR" NULLABLE="YES"/>
+    </ROW>
+</BCPFORMAT>

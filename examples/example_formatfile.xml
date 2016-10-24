@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<BCPFORMAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://schemas.microsoft.com/sqlserver/2004/bulkload/format">
+    <RECORD>
+        <FIELD ID="POS1" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <FIELD ID="POS2" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <FIELD ID="POS3" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <FIELD ID="POS4" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <FIELD ID="POS5" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <FIELD ID="POS6" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <FIELD ID="POS7" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <FIELD ID="POS8" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <FIELD ID="POS9" xsi:type="CharTerm" TERMINATOR="\t"/>
+        <FIELD ID="POS10" xsi:type="CharTerm" TERMINATOR="\t" MAX_LENGTH="17"/>
+        <FIELD ID="POS11" xsi:type="CharTerm" TERMINATOR="\r\n" MAX_LENGTH="25"/>
+    </RECORD>
+    <ROW>
+        <COLUMN SOURCE="POS1" NAME="val_tinyint" xsi:type="SQLTINYINT"/>
+        <COLUMN SOURCE="POS2" NAME="val_smallint" xsi:type="SQLSMALLINT"/>
+        <COLUMN SOURCE="POS3" NAME="val_int" xsi:type="SQLINT"/>
+        <COLUMN SOURCE="POS4" NAME="val_bigint" xsi:type="SQLBIGINT"/>
+        <COLUMN SOURCE="POS5" NAME="val_date" xsi:type="SQLDATE"/>
+        <COLUMN SOURCE="POS6" NAME="val_datetime" xsi:type="SQLDATETIME"/>
+        <COLUMN SOURCE="POS7" NAME="val_money" xsi:type="SQLMONEY"/>
+        <COLUMN SOURCE="POS8" NAME="val_decimal" xsi:type="SQLDECIMAL" NULLABLE="YES" PRECISION="14" SCALE="7"/>
+        <COLUMN SOURCE="POS9" NAME="val_bit" xsi:type="SQLBIT" NULLABLE="YES"/>
+        <COLUMN SOURCE="POS10" NAME="val_varchar" xsi:type="SQLVARYCHAR"/>
+        <COLUMN SOURCE="POS11" NAME="val_varchar_nullable" xsi:type="SQLVARYCHAR" NULLABLE="YES"/>
+    </ROW>
+</BCPFORMAT>

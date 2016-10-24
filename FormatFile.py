@@ -19,15 +19,15 @@ class FormatFile:
     # dictionary items are related to the BCP Format file used to import CSV data to TSQL
     # for an example check out: .\files\formatfiles\example_formatfile.xml
 
-    def __init__(self, filepath):
-        self.path = filepath
+    def __init__(self, file_path):
+        self.path = file_path
         self.isValid = True
         self.message = None
         self.dic_field = {}
         fh = open(self.path, "r")
         self.soup = BeautifulSoup(fh.read(), "xml")
-        self.fields = self.soup.findAll("FIELD")
-        self.columns = self.soup.findAll("COLUMN")
+        self.records = self.soup.findAll("FIELD")
+        self.rows = self.soup.findAll("COLUMN")
         # print(self.soup.prettify())
         self.test_file_validity()
         if self.isValid:
@@ -36,8 +36,8 @@ class FormatFile:
             self.test_column_attributes()
 
     def test_file_validity(self):
-        taglist = ('BCPFORMAT', 'RECORD', 'ROW', 'FIELD', 'COLUMN')
-        for tag in taglist:
+        tag_list = ('BCPFORMAT', 'RECORD', 'ROW', 'FIELD', 'COLUMN')
+        for tag in tag_list:
             if self.verify_tag_exists(tag):
                 self.isValid = True
                 continue
@@ -55,19 +55,18 @@ class FormatFile:
         return exists
 
     def test_field_attributes(self):
-        mandatory_attributelist = ("ID", "xsi:type", "TERMINATOR")
-        optional_attributelist = ("MAX_LENGTH", "COLLATION")
-        tag = "FIELD"
-        self.test_mandatory_attributes(tag, mandatory_attributelist)
+        mandatory_attribute_list = ("ID", "xsi:type", "TERMINATOR")
+        optional_attribute_list = ("MAX_LENGTH", "COLLATION")
+        self.test_mandatory_attributes("FIELD", mandatory_attribute_list)
         i = 0
-        for tag in self.fields:
+        for record in self.records:
             i += 1
-            for att, val in tag.attrs.items():
-                if att == "ID" or att == "MAX_LENGTH":
+            for att, val in record.attrs.items():
+                if att == "MAX_LENGTH":
                     if not val.isdigit():
                         self.isValid = False
                         self.message = "The {position} '{tag_name}' tag requires a number for its {attribute} attribute.".format(
-                            position=get_ordinal_position(i), tag_name=tag.name, attribute=att)
+                            position=get_ordinal_position(i), tag_name=record.name, attribute=att)
                         break
                     else:
                         continue
@@ -75,59 +74,58 @@ class FormatFile:
                     if not val == "CharTerm":
                         self.isValid = False
                         self.message = "The {position} '{tag_name}' tag has an invalid value ('{error_value}') for the {attribute} attribute.".format(
-                            position=get_ordinal_position(i), error_value=val, tag_name=tag.name, attribute=att)
+                            position=get_ordinal_position(i), error_value=val, tag_name=record.name, attribute=att)
                         break
                     else:
                         continue
                 else:
-                    if not att in optional_attributelist and not att in mandatory_attributelist:
+                    if att not in optional_attribute_list and att not in mandatory_attribute_list:
                         self.isValid = False
                         self.message = "The {position} '{tag_name}' tag has an unrecognised attribute '{attribute}'.".format(
-                            position=get_ordinal_position(i), tag_name=tag.name, attribute=att)
+                            position=get_ordinal_position(i), tag_name=record.name, attribute=att)
                         break
                     else:
                         continue
 
     def test_column_attributes(self):
-        mandatory_attributelist = ("SOURCE", "NAME", "xsi:type")
-        optional_attributelist = ("PRECISION", "SCALE", "NULLABLE")
+        mandatory_attribute_list = ("SOURCE", "NAME", "xsi:type")
+        optional_attribute_list = ("PRECISION", "SCALE", "NULLABLE")
         allowed_data_types = (
             "SQLTINYINT", "SQLSMALLINT", "SQLINT", "SQLBIGINT", "SQLDATE", "SQLDATETIME", "SQLDECIMAL", "SQLMONEY",
             "SQLBIT", "SQLVARYCHAR", "SQLNVARCHAR")
-        tag = "COLUMN"
-        self.test_mandatory_attributes(tag, mandatory_attributelist)
+        self.test_mandatory_attributes("COLUMN", mandatory_attribute_list)
         i = 0
-        for tag in self.columns:
+        for row in self.rows:
             i += 1
-            for att, val in tag.attrs.items():
-                if att == "SOURCE" or att == "PRECISION" or att == "SCALE":
+            for att, val in row.attrs.items():
+                if att == "PRECISION" or att == "SCALE":
                     if not val.isdigit():
                         self.isValid = False
                         self.message = "The {position} '{tag_name}' tag requires a number for its {attribute} attribute.".format(
-                            position=get_ordinal_position(i), attribute=att, tag_name=tag.name)
+                            position=get_ordinal_position(i), attribute=att, tag_name=row.name)
                         break
                     else:
                         continue
                 elif att == "NULLABLE":
-                    if not val in ("YES", "NO"):
+                    if val not in ("YES", "NO"):
                         self.isValid = False
                         self.message = "The {position} '{tag_name}' tag has an invalid value ('{error_value}') for the {attribute} attribute.".format(
-                            position=get_ordinal_position(i), error_value=val, attribute=att, tag_name=tag.name)
+                            position=get_ordinal_position(i), error_value=val, attribute=att, tag_name=row.name)
                         break
                     else:
                         continue
                 elif att == "xsi:type":
-                    if not val in allowed_data_types:
+                    if val not in allowed_data_types:
                         self.isValid = False
                         self.message = "The {position} '{tag_name}' tag has an unrecognised data type '{error_value}' in the {attribute} attribute.".format(
-                            position=get_ordinal_position(i), error_value=val, tag_name=tag.name, attribute=att)
+                            position=get_ordinal_position(i), error_value=val, tag_name=row.name, attribute=att)
                         break
 
                 else:
-                    if not att in optional_attributelist and not att in mandatory_attributelist:
+                    if att not in optional_attribute_list and att not in mandatory_attribute_list:
                         self.isValid = False
                         self.message = "The {position} '{tag_name}' tag has an unrecognised attribute '{error}'.".format(
-                            position=get_ordinal_position(i), error=att, tag_name=tag.name)
+                            position=get_ordinal_position(i), error=att, tag_name=row.name)
                         break
                     else:
                         continue
@@ -156,26 +154,28 @@ class FormatFile:
                 break
         return exists, i
 
-    def getfields(self):
+    def get_fields(self):
         if self.isValid:
-            for field in self.fields:
+            for field in self.records:
+                field_id = len(self.dic_field) + 1
                 dic_record = {}
-                field_id = int(field.get("ID"))
                 for attr, value in field.attrs.items():
                     dic_record[attr] = value
                 self.dic_field[field_id] = dic_record
 
-            for column in self.columns:
-                source = column.get("SOURCE")
-                column_id = int(source)
-                dic_row = self.dic_field.get(column_id)
+            for row in self.rows:
+                row_source = row.get("SOURCE")
+                # get the item from the dictionary where the SOURCE in the self.rows
+                # matches the ID in the self.records
+                column_position = self.get_matching_id_key(row_source)
+                dic_row = self.dic_field.get(column_position, None)
                 if dic_row is None:
                     # this is bad as it means that there is an id in the column tags that doesnt exist in the FIELD tags
                     print(False, "SOURCE attribute is missing for column.")
                 else:
-                    for attr, value in column.attrs.items():
+                    for attr, value in row.attrs.items():
                         dic_row[attr] = value
-                    self.dic_field[column_id] = dic_row
+                    self.dic_field[column_position] = dic_row
 
             for key, value in self.dic_field.items():
                 value['isSkipped'] = (value.get("NAME") is None)
@@ -191,54 +191,66 @@ class FormatFile:
                         nullable = ""
                         value["NULLABLE"] = False
 
-                    datatype = value.get("xsi:type")
-                    value['regex'] = self.get_regex(datatype, max_length, nullable, precision, scale)
+                    data_type = value.get("xsi:type")
+                    value['regex'] = self.get_regex(data_type, max_length, nullable, precision, scale)
             return self.dic_field
         else:
             return
 
+    def get_matching_id_key(self, source):
+        matching_key = None
+        for key, item in self.dic_field.items():
+            # print(source, item.get("ID", None))
+            if source == item.get("ID", None):
+                matching_key = key
+                break
+            else:
+                continue
+        # print(matching_key)
+        return matching_key
+
     @staticmethod
-    def get_regex(datatype, field_max_length, field_nullable, decimal_precision=18, decimal_scale=0):
-        if datatype == "SQLTINYINT":
+    def get_regex(data_type, field_max_length, field_nullable, decimal_precision=18, decimal_scale=0):
+        if data_type == "SQLTINYINT":
             if field_max_length is None:
                 field_max_length = 3
             regex = r"^[\d]{{1,{regex_max_length}}}${regex_nullable}".format(regex_max_length=field_max_length,
                                                                              regex_nullable=field_nullable)
-        elif datatype == "SQLSMALLINT":
+        elif data_type == "SQLSMALLINT":
             if field_max_length is None:
                 field_max_length = 5
             regex = r"^[\d]{{1,{regex_max_length}}}${regex_nullable}".format(regex_max_length=field_max_length,
                                                                              regex_nullable=field_nullable)
-        elif datatype == "SQLINT":
+        elif data_type == "SQLINT":
             if field_max_length is None:
                 field_max_length = 9
             regex = r"^[\d]{{1,{regex_max_length}}}${regex_nullable}".format(regex_max_length=field_max_length,
                                                                              regex_nullable=field_nullable)
-        elif datatype == "SQLBIGINT":
+        elif data_type == "SQLBIGINT":
             if field_max_length is None:
                 field_max_length = 19
             regex = r"^[\d]{{1,{regex_max_length}}}${regex_nullable}".format(regex_max_length=field_max_length,
                                                                              regex_nullable=field_nullable)
-        elif datatype == "SQLDATE":
+        elif data_type == "SQLDATE":
             regex = r"^[\d]{{4}}-[\d]{{2}}-[\d]{{2}}${regex_nullable}".format(regex_nullable=field_nullable)
-        elif datatype == "SQLDATETIME":
+        elif data_type == "SQLDATETIME":
             regex = r"^[\d]{{4}}-[\d]{{2}}-[\d]{{2}} [\d]{{2}}:[\d]{{2}}:[\d]{{2}}${regex_nullable}".format(
                 regex_nullable=field_nullable)
-        elif datatype == "SQLMONEY":
+        elif data_type == "SQLMONEY":
             regex = r"^(?P<pounds>[\d]{{1,19}})(?P<pence>\.[\d]{{1,4}})?${regex_nullable}".format(
                 regex_nullable=field_nullable)
-        elif datatype == "SQLDECIMAL":
+        elif data_type == "SQLDECIMAL":
             regex = r"^(?:[\d]{{1,{regex_precision}}})(?:\.[\d]{{1,{regex_scale}}})?$|^${regex_nullable}".format(
                 regex_precision=decimal_precision,
                 regex_scale=decimal_scale,
                 regex_nullable=field_nullable)
-        elif datatype == "SQLVARYCHAR" or datatype == "SQLNVARCHAR":
+        elif data_type == "SQLVARYCHAR" or data_type == "SQLNVARCHAR":
             if field_max_length is None:
                 field_max_length = str(1)
             regex = r"^.{{1,{regex_max_length}}}${regex_nullable}".format(
                 regex_max_length=field_max_length, regex_nullable=field_nullable)
-        elif datatype == "SQLBIT":
+        elif data_type == "SQLBIT":
             regex = "^(TRUE|FALSE|0|1)${regex_nullable}".format(regex_nullable=field_nullable)
         else:
-            regex = "Unrecognised xsi:type '{error_data_type}'.".format(error_data_type=datatype)
+            regex = "Unrecognised xsi:type '{error_data_type}'.".format(error_data_type=data_type)
         return regex

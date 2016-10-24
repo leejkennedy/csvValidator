@@ -1,0 +1,18 @@
+"2016-10-27 13:55:26"|"leejk"|"example.txt"|"2016-10-27 11:44:00"
+
+
+###########################################################################################################
+####################################### file validation certificate #######################################
+###########################################################################################################
+
+This file was created after the successful validation of 'example.txt'
+against the format file 'example_formatfile.xml'.
+
+csv: 		C:\Users\leejk\Documents\GitHub\csvValidator\examples\example.txt
+format file:	C:\Users\leejk\Documents\GitHub\csvValidator\examples\example_formatfile.xml
+
+The first line of the file is a pipe-delimited, double-quote text-qualified, string of the following data:
+validation date time|username|csv file name|csv file modified datetime
+
+Note: all dates above are localtime in ISO 8601 format (yyyy-mm-dd hh:mm:ss).
+        
