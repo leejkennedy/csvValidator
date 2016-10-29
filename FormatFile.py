@@ -6,13 +6,9 @@ from utility import get_ordinal_position
 
 
 # TODO:
-# DONE 1. are we working with an xml format file
-# DONE 1.1 does it have all the required tags
-# DONE 1.2 do each of the FIELD tags have the required attributes
-# DONE 1.3 do each of the COLUMN tags have the required attributes
-# DONE 2. handling skipped columns (i.e. column in file is to be ignored according to the format file)
-# DONE 2.1 add a isSkipped item to the dictionary so the calling process can identify a skipped field
-# DONE a skipped field is where a column provided in the CSV file is to be ignored.
+# 1. bulkload schema does not allow ID and COLUMN fields to start with a number.
+# can code be updated to accommodate a string?
+# 2. change FormatFile.py to validate all field types allowed by schema, or leave it as a subset?
 
 class FormatFile:
     # returns a dictionary if it's a valid format file

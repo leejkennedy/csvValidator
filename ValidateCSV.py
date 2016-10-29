@@ -17,17 +17,17 @@ class ValidateCSV:
         self.validate_message_detailed = ""
         self.format_file_file_path = formatfile_filepath
         self.csv_file_path = csv_filepath
-        self.current_time = utility.getcurrenttime()
+        self.current_time = utility.get_current_time()
         self.username = utility.getuser()
         self.delimiter = "\t"
         self.validation_certificate_path = None
-        self.format_file_path = utility.path_from_filepath(self.format_file_file_path)
-        self.format_file_filename = utility.file_from_filepath(self.format_file_file_path)
-        self.csv_path = utility.path_from_filepath(self.csv_file_path)
-        self.csv_filename = utility.file_from_filepath(self.csv_file_path)
+        self.format_file_path = utility.path_from_file_path(self.format_file_file_path)
+        self.format_file_filename = utility.file_from_file_path(self.format_file_file_path)
+        self.csv_path = utility.path_from_file_path(self.csv_file_path)
+        self.csv_filename = utility.file_from_file_path(self.csv_file_path)
         self.csv_file = os.path.splitext(self.csv_filename)[0]
-        self.csv_created_date = utility.getfiledatetime(self.csv_file_path, 0)
-        self.csv_modified_date = utility.getfiledatetime(self.csv_file_path, 1)
+        self.csv_created_date = utility.get_file_date_time(self.csv_file_path, 0)
+        self.csv_modified_date = utility.get_file_date_time(self.csv_file_path, 1)
         self.ff = FormatFile.FormatFile(self.format_file_file_path)
         if not self.ff.isValid:
             self.set_validate(False, "ERROR", "Error:", "Format File is invalid.")
@@ -42,9 +42,9 @@ class ValidateCSV:
                 if self.validate_state:
                     self.create_validation_certificate(self)
 
-    def set_validate(self, state, type, title, message, detail=None):
+    def set_validate(self, state, v_type, title, message, detail=None):
         self.validate_state = state
-        self.validate_type = type
+        self.validate_type = v_type
         self.validate_message_title = title
         self.validate_message_text = message
         self.validate_message_detailed = detail

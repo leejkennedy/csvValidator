@@ -1,12 +1,25 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 import sys
-import ValidateCSV
-import HelpForm
+
 from PyQt5.QtCore import (QDir, Qt)
+from PyQt5.QtGui import (QIcon)
 from PyQt5.QtWidgets import (QMainWindow, QWidget, QGridLayout, QHBoxLayout, QVBoxLayout, QApplication,
                              QPushButton, QFileDialog, QAction, QDialogButtonBox, QMessageBox)
-from PyQt5.QtGui import (QIcon)
+
+import HelpForm
+import ValidateCSV
+
+
+# TODO:
+# 1. non-native dialogs is used to cope with my arch/gnome setup.
+# - leave as is or can i use a test to determine what to show?
+# 2. arch/gnome doesn't show detail button in messagebox dialog. leave as is or provide workaround/alternate messagebox?
+# 3. validation certificate not to be provided by default
+# - add as an option to the main form above the 'exit' menu option.
+# 4. improve layout: 
+# 4.1. add text box for the CSV file and format file that are populated when selected.
+# 4.2. better button positioning .
 
 
 class CSVValidatorForm(QMainWindow):
@@ -20,7 +33,7 @@ class CSVValidatorForm(QMainWindow):
         self.buttonBox = QDialogButtonBox()
         self.buttonBox.setOrientation(Qt.Horizontal)
         self.buttonBox.setStandardButtons(self.button_ok | self.button_cancel)
-        self.menubar = self.menuBar()
+        self.menu_bar = self.menuBar()
 
         self.width = 300
         self.height = 300
@@ -58,8 +71,8 @@ class CSVValidatorForm(QMainWindow):
         action_help.setStatusTip('Launch help')
         action_help.triggered.connect(self.button_help_clicked)
 
-        menu_file = self.menubar.addMenu('&File')
-        menu_help = self.menubar.addMenu('&Help')
+        menu_file = self.menu_bar.addMenu('&File')
+        menu_help = self.menu_bar.addMenu('&Help')
         menu_file.addAction(action_exit)
         menu_help.addAction(action_help)
 
@@ -80,19 +93,19 @@ class CSVValidatorForm(QMainWindow):
     def apply_layout_box(self):
         form_layout = QWidget()
 
-        hbox = QHBoxLayout()
-        hbox.addWidget(self.button_csv)
-        hbox.addWidget(self.button_format_file)
+        h_box = QHBoxLayout()
+        h_box.addWidget(self.button_csv)
+        h_box.addWidget(self.button_format_file)
 
-        hbox_ok_cancel = QHBoxLayout()
-        hbox_ok_cancel.setAlignment(Qt.AlignLeft)
-        hbox_ok_cancel.addWidget(self.buttonBox)
+        h_box_ok_cancel = QHBoxLayout()
+        h_box_ok_cancel.setAlignment(Qt.AlignLeft)
+        h_box_ok_cancel.addWidget(self.buttonBox)
 
-        vbox = QVBoxLayout()
-        vbox.addLayout(hbox)
-        vbox.addLayout(hbox_ok_cancel)
+        v_box = QVBoxLayout()
+        v_box.addLayout(h_box)
+        v_box.addLayout(h_box_ok_cancel)
 
-        form_layout.setLayout(vbox)
+        form_layout.setLayout(v_box)
         self.setCentralWidget(form_layout)
 
     def button_getfile_csv_clicked(self):
@@ -120,8 +133,9 @@ class CSVValidatorForm(QMainWindow):
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
 
     def button_ok_clicked(self):
-        vcsv = ValidateCSV.ValidateCSV(self.file_format_file, self.file_csv)
-        self.showmessage(vcsv.validate_state, vcsv.validate_message_title, vcsv.validate_message_text, vcsv.validate_message_detailed)
+        v_csv = ValidateCSV.ValidateCSV(self.file_format_file, self.file_csv)
+        self.show_message(v_csv.validate_state, v_csv.validate_message_title,
+                          v_csv.validate_message_text, v_csv.validate_message_detailed)
 
     def button_cancel_clicked(self):
         self.statusBar().showMessage("bye")
@@ -133,8 +147,9 @@ class CSVValidatorForm(QMainWindow):
         HelpForm.HelpForm()
 
     def getfile(self, sender_caption, sender_file_filter):
-        formoptions = QFileDialog.DontUseNativeDialog
-        file_path = QFileDialog().getOpenFileName(self, sender_caption, '', sender_file_filter, options=formoptions)
+        form_options = QFileDialog.DontUseNativeDialog
+        file_path = QFileDialog().getOpenFileName(self, sender_caption, ''
+                                                  , sender_file_filter, options=form_options)
         return file_path
 
     def keyPressEvent(self, e):
@@ -142,16 +157,16 @@ class CSVValidatorForm(QMainWindow):
             self.button_cancel_clicked()
 
     @staticmethod
-    def showmessage(message_state, message_title, message_text, message_detail):
+    def show_message(message_state, message_title, message_text, message_detail):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
         msg.setWindowTitle("CSV Validator")
 
         if message_state:
-            icontype = QMessageBox.Information
+            icon_type = QMessageBox.Information
         else:
-            icontype = QMessageBox.Critical
-        msg.setIcon(icontype)
+            icon_type = QMessageBox.Critical
+        msg.setIcon(icon_type)
 
         msg.setText(message_title + '                                              ')
         msg.setInformativeText(message_text)

@@ -1,4 +1,4 @@
-"2016-10-27 13:55:26"|"leejk"|"example.txt"|"2016-10-27 11:44:00"
+"2016-10-29 12:21:42"|"lee"|"example.txt"|"2016-10-29 12:03:08"
 
 
 ###########################################################################################################
@@ -6,10 +6,10 @@
 ###########################################################################################################
 
 This file was created after the successful validation of 'example.txt'
-against the format file 'example_formatfile.xml'.
+against the format file 'example_formatfile_skipcolumn.xml'.
 
-csv: 		C:\Users\leejk\Documents\GitHub\csvValidator\examples\example.txt
-format file:	C:\Users\leejk\Documents\GitHub\csvValidator\examples\example_formatfile.xml
+csv: 		/home/lee/Documents/python/csvValidator/examples/example.txt
+format file:	/home/lee/Documents/python/csvValidator/test/example_formatfile_skipcolumn.xml
 
 The first line of the file is a pipe-delimited, double-quote text-qualified, string of the following data:
 validation date time|username|csv file name|csv file modified datetime
