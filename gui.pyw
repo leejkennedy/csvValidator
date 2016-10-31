@@ -35,8 +35,8 @@ class CSVValidatorForm(QMainWindow):
         self.buttonBox.setStandardButtons(self.button_ok | self.button_cancel)
         self.menu_bar = self.menuBar()
 
-        self.width = 300
-        self.height = 300
+        self.width = 250
+        self.height = 250
 
         self.file_csv = None
         self.file_format_file = None
@@ -66,6 +66,11 @@ class CSVValidatorForm(QMainWindow):
         action_exit.setStatusTip('Exit application')
         action_exit.triggered.connect(self.button_cancel_clicked)
 
+        action_trigger = QAction(QIcon('trigger.png'), 'Create &Trigger file', self)
+        action_trigger.setShortcut('Ctrl+T')
+        action_trigger.setStatusTip('Create a Trigger file')
+        action_trigger.triggered.connect(self.button_trigger_clicked)
+
         action_help = QAction(QIcon('help.png'), '&Help', self)
         action_help.setShortcut('Ctrl+H')
         action_help.setStatusTip('Launch help')
@@ -73,6 +78,7 @@ class CSVValidatorForm(QMainWindow):
 
         menu_file = self.menu_bar.addMenu('&File')
         menu_help = self.menu_bar.addMenu('&Help')
+        menu_file.addAction(action_trigger)
         menu_file.addAction(action_exit)
         menu_help.addAction(action_help)
 
@@ -137,6 +143,16 @@ class CSVValidatorForm(QMainWindow):
         self.show_message(v_csv.validate_state, v_csv.validate_message_title,
                           v_csv.validate_message_text, v_csv.validate_message_detailed)
 
+    def button_trigger_clicked(self):
+        if self.file_csv is not None and self.file_format_file is not None:
+            self.show_message(True, "This would create the trigger file.",
+                              "This would create the trigger file.",
+                              "no need for a detailed message.")
+        else:
+            self.show_message(False, "Error",
+                              "Validate the CSV file before creating the trigger file.",
+                              "No need for detailed error message.")
+
     def button_cancel_clicked(self):
         self.statusBar().showMessage("bye")
         self.close()
@@ -175,6 +191,7 @@ class CSVValidatorForm(QMainWindow):
         msg.setStandardButtons(QMessageBox.Ok)
         # retval = msg.exec_()
         msg.exec_()
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

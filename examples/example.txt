@@ -1,6 +1,6 @@
 val_tinyint	val_smallint	val_int	val_bigint	val_date	val_datetime	val_money	val_decimal	val_bit	val_varchar	val_varchar_nullable
 5	50	500	45000	2016-08-19	2016-08-19 09:15:08	450000.0005	4500000	TRUE	This is a string	this is another string
-3	30	300	35000	2016-08-21	2016-08-21 09:15:08	350000.0005		FALSE	This is a string	this is another string
+d3	30	300	35000	2016-08-21	2016-08-21 09:15:08	350000.0005		FALSE	This is a string	this is another string
 15	20	400	25000	2016-08-23	2016-08-23 09:15:08	250000.0005	2500000	1	This is a string	this is another string
 25	70	800	15000	2016-08-25	2016-08-25 09:15:08	150000.0005	1500000	0	This is a string	this is another string
 25	70	800	15000	2016-08-25	2016-08-25 09:15:08	150000.0005	1500000		This is a string	

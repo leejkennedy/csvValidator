@@ -39,8 +39,8 @@ class ValidateCSV:
             self.validate_header(self)
             if self.validate_state:
                 self.validate_content(self)
-                if self.validate_state:
-                    self.create_validation_certificate(self)
+                # if self.validate_state:
+                #   self.create_validation_certificate(self)
 
     def set_validate(self, state, v_type, title, message, detail=None):
         self.validate_state = state
