@@ -32,8 +32,8 @@ def file_from_file_path(file_path):
     return os.path.basename(file_path)
 
 
-def path_exists(path, makedirectory=False):
-    if not os.path.exists(path) and makedirectory is True:
+def path_exists(path, make_directory=False):
+    if not os.path.exists(path) and make_directory is True:
         create_path(path)
     return os.path.exists(path)
 
@@ -51,14 +51,11 @@ def create_path(filepath):
             raise
 
 
-def get_ordinal_position(num):
+def get_ordinal(num):
+    ordinal = str(num)
     if num > 0:
-        return '{ordinal}{position}'.format(ordinal=num, position=(lambda num_o: ({11: 'th', 12: 'th', 13: 'th'}
-                                                                                  .get(num % 100,
-                                                                                       {1: 'st', 2: 'nd', 3: 'rd', }
-                                                                                       .get(num % 10, 'th')
-                                                                                       )
-                                                                                  )
-                                                                   )(num))
-    else:
-        return str(num)
+        ordinal = ordinal + (lambda num_o:
+                             ({11: 'th', 12: 'th', 13: 'th'}.get(num % 100,
+                                                                 {1: 'st', 2: 'nd', 3: 'rd', }.get(num % 10, 'th'))))(
+            num)
+    return ordinal
